@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3 — 2026-10-18
+
+- Support cancellation and a monotonic deadline during reconciliation.
+- Skip text comparison for non-overlapping blocks and bound similarity windows to 1,000 characters. Full-text disagreements remain explicit.
+
 ## 0.1.2 — 2026-10-18
 
 - Disable unnecessary image-file extraction in the OpenDataLoader worker.

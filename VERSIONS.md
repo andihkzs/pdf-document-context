@@ -1,12 +1,12 @@
 # Versions and compatibility
 
-## 0.1.2
+## 0.1.3
 
-English documentation, examples and release descriptions; image extraction disabled and explicit OCR-layer opt-in added. No model-provider integration is included in the library. The Python API and schema remain compatible with 0.1.0.
+English documentation, examples and release descriptions; image extraction disabled and explicit OCR-layer opt-in added. Reconciliation also supports cancellation/deadlines and bounded similarity windows. No model-provider integration is included in the library. The Python API and schema remain compatible with 0.1.0.
 
 | Interface | Version / evidence |
 |---|---|
-| Library | `pdf-document-context==0.1.2` |
+| Library | `pdf-document-context==0.1.3` |
 | Shared JSON schema | `1.0`, `Document.schema_version` |
 | Primary adapter | Docling `2.140.0`, `DoclingDocument.export_to_dict()` |
 | Secondary adapter | OpenDataLoader PDF `2.5.13`, `format="json"` |

@@ -1,5 +1,6 @@
 import json
 import unittest
+import time
 from copy import deepcopy
 from dataclasses import replace
 from pdf_document_context import (Block, Document, Limits, from_docling,
@@ -14,6 +15,10 @@ def doc(engine="docling"):
 
 
 class ReconciliationTests(unittest.TestCase):
+    def test_reconciliation_deadline_and_cancellation(self):
+        with self.assertRaises(TimeoutError):reconcile(doc(),doc('opendataloader'),deadline=time.monotonic()-1)
+        with self.assertRaises(InterruptedError):reconcile(doc(),doc('opendataloader'),cancel=lambda:True)
+
     def test_agreement_retains_original_geometry_and_text(self):
         a,b=doc(),doc("opendataloader")
         b.blocks[0].rect=(41,41,399,66)

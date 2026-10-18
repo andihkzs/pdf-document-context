@@ -1,6 +1,6 @@
 # PDF Document Context
 
-**Version 0.1.2 — an experimental Python library for local PDF analysis and bounded LLM context.**
+**Version 0.1.3 — an experimental Python library for local PDF analysis and bounded LLM context.**
 
 PDF Document Context reconciles **Docling** and **OpenDataLoader PDF** results, exposes disagreements and prepares context for translation or a later LLM assessment. The deterministic core has no third-party Python dependencies.
 
@@ -34,7 +34,7 @@ The core supports **Python 3.11+**. Actual PDF extraction requires optional pars
 
 | Component | Reference version |
 |---|---|
-| PDF Document Context | **0.1.2**, schema **1.0** |
+| PDF Document Context | **0.1.3**, schema **1.0** |
 | Docling | **2.140.0** |
 | OpenDataLoader PDF | **2.5.13** |
 | Java | Upstream requires **11+**; tested with **OpenJDK 21** |
@@ -122,7 +122,7 @@ Only detected disagreements produce review plans. The application separately own
 
 ## Assessment limits
 
-Both parsers can agree and still be wrong. Overlap and similarity scores are **not calibrated probabilities**. Split/merge cases, complex tables, cross-page section hierarchies, complex scripts and rotated pages are not comprehensively resolved. Table cells are contextual data and are not automatically attached to every separate translation block by this library.
+Both parsers can agree and still be wrong. Overlap and similarity scores are **not calibrated probabilities**. Similarity matching uses at most 1,000 normalized characters per side; complete text equality is checked separately. `reconcile(..., cancel=callback, deadline=monotonic_deadline)` supports cancellation and an explicit deadline during matching. Split/merge cases, complex tables, cross-page section hierarchies, complex scripts and rotated pages are not comprehensively resolved. Table cells are contextual data and are not automatically attached to every separate translation block by this library.
 
 Review planning is an initial shortlist. The library neither generates image descriptions nor judges warning semantics. Numeric checks conservatively flag changed decimal notation and do not replace a subject-matter translation review.
 

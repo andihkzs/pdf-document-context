@@ -3,6 +3,7 @@ from copy import deepcopy
 from difflib import SequenceMatcher
 import json
 import re
+import time
 import unicodedata
 from .model import Document, Limits
 
@@ -18,12 +19,16 @@ def overlap(a, b):
     return intersection / max((x1-x0)*(y1-y0), (u1-u0)*(v1-v0), .001)
 
 
-def reconcile(primary: Document, secondary: Document, limits=Limits()) -> Document:
+def reconcile(primary: Document, secondary: Document, limits=Limits(), *, cancel=None, deadline=None) -> Document:
     """One-to-one evidence matching. Ambiguous/split blocks stay unresolved.
 
     Primary text, rectangles, roles and order are retained. Agreement is evidence,
     not calibrated confidence or an accessibility decision. No artifact inference.
     """
+    def checkpoint():
+        if cancel and cancel():raise InterruptedError('Reconciliation cancelled')
+        if deadline is not None and time.monotonic()>=deadline:raise TimeoutError('Reconciliation deadline exceeded')
+    checkpoint()
     primary.validate(limits)
     secondary.validate(limits)
     if primary.pages != secondary.pages:
@@ -31,13 +36,20 @@ def reconcile(primary: Document, secondary: Document, limits=Limits()) -> Docume
     result = deepcopy(primary)
     result.engines.update(secondary.engines)
     matches = {}
+    normalized_secondary={b.id:normalized(b.text) for b in secondary.blocks}
     for a in result.blocks:
+        checkpoint()
         candidates = []
-        for b in secondary.blocks:
+        text_a=normalized(a.text)
+        for index,b in enumerate(secondary.blocks):
+            if index%64==0:checkpoint()
             if a.page != b.page:
                 continue
             geom = overlap(a.rect, b.rect)
-            similarity = SequenceMatcher(None, normalized(a.text), normalized(b.text), autojunk=False).ratio()
+            if geom<.5:continue
+            # Similarity is a bounded matching hint; full equality is checked below.
+            text_b=normalized_secondary[b.id]
+            similarity = 1. if text_a==text_b else SequenceMatcher(None,text_a[:1000],text_b[:1000],autojunk=True).ratio()
             if geom >= .5 and (similarity >= .65 or not a.text and not b.text):
                 candidates.append((.6*geom+.4*similarity, b, geom, similarity))
         candidates.sort(key=lambda x: (-x[0], x[1].id))
