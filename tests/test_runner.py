@@ -7,10 +7,16 @@ import tempfile
 import time
 import unittest
 from pdf_document_context.runner import extract, EngineError
+from pdf_document_context.worker import odl_options
 
 
 @unittest.skipUnless(sys.platform.startswith("linux"),"Linux runtime isolation")
 class RunnerTests(unittest.TestCase):
+    def test_image_extraction_disabled_and_ocr_layer_requires_explicit_opt_in(self):
+        self.assertEqual(odl_options({})['image_output'],'off')
+        self.assertNotIn('content_safety_off',odl_options({}))
+        self.assertEqual(odl_options({'include_hidden_text':True})['content_safety_off'],['hidden-text'])
+
     def test_network_syscalls_denied(self):
         program="""from pdf_document_context.worker import isolate
 import socket,errno

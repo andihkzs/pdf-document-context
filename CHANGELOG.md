@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 — 2026-10-18
+
+- Disable unnecessary image-file extraction in the OpenDataLoader worker.
+- Retain header/footer text and add explicit `include_hidden_text` opt-in for locally prepared OCR layers.
+- Keep upstream hidden-text filtering enabled by default.
+
 ## 0.1.1 — 2026-10-18
 
 - Translate repository documentation, example comments and public release descriptions into English.

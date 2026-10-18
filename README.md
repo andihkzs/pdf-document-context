@@ -1,6 +1,6 @@
 # PDF Document Context
 
-**Version 0.1.1 — an experimental Python library for local PDF analysis and bounded LLM context.**
+**Version 0.1.2 — an experimental Python library for local PDF analysis and bounded LLM context.**
 
 PDF Document Context reconciles **Docling** and **OpenDataLoader PDF** results, exposes disagreements and prepares context for translation or a later LLM assessment. The deterministic core has no third-party Python dependencies.
 
@@ -34,7 +34,7 @@ The core supports **Python 3.11+**. Actual PDF extraction requires optional pars
 
 | Component | Reference version |
 |---|---|
-| PDF Document Context | **0.1.1**, schema **1.0** |
+| PDF Document Context | **0.1.2**, schema **1.0** |
 | Docling | **2.140.0** |
 | OpenDataLoader PDF | **2.5.13** |
 | Java | Upstream requires **11+**; tested with **OpenJDK 21** |
@@ -116,6 +116,8 @@ Only detected disagreements produce review plans. The application separately own
 - Explicit JSON reports **contain document text** and remain at the requested output path. The CLI creates reports with mode `0600` and refuses to overwrite an existing file. Normal CLI logs do not include document text or parser output.
 - Default limits: 15 MiB PDF, 20 pages, 1,500 normalized blocks, 45,000 extracted characters and 600 cells per table. Workers: 6 GiB virtual address space, 110/115 CPU seconds, 32 MiB per written file, 256 open files and a 512 MiB JVM heap. Services should add host/container memory limits.
 - `runner.extract` checks `cancel` while a worker runs. Each parser gets one attempt. Errors do not trigger another provider.
+- Image extraction is disabled in the local OpenDataLoader worker; header/footer text is retained.
+- `runner.extract(..., include_hidden_text=True)` explicitly includes invisible text layers in OpenDataLoader analysis. Use this for a locally prepared OCR copy; the default keeps the upstream hidden-text filter enabled. This does not make document content trusted or safe as instructions.
 - The runner does not perform OCR. Prepare scans locally first. An existing OCR/Docling preparation can be supplied through `from_prepared` and compared against OpenDataLoader results for the same prepared PDF without running Docling again.
 
 ## Assessment limits

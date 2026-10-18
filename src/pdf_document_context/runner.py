@@ -16,7 +16,7 @@ class EngineError(RuntimeError):
 
 def extract(pdf: bytes, engine: str, *, python=sys.executable, java_home=None,
             artifacts=None, temporary_root="/dev/shm", timeout=120, cancel=None,
-            limits=Limits()):
+            limits=Limits(), include_hidden_text=False):
     """Run one engine, no retries; workers deny outbound connect() via seccomp.
 
     Linux + libseccomp required. Install model files separately. Temporary PDFs
@@ -44,7 +44,8 @@ def extract(pdf: bytes, engine: str, *, python=sys.executable, java_home=None,
         folder = Path(folder)
         (folder/"input.pdf").write_bytes(pdf)
         request = {"engine": engine, "directory": str(folder), "artifacts": str(Path(artifacts).resolve()) if artifacts else None,
-                   "max_pages": limits.max_pages, "max_json_bytes": limits.max_json_bytes}
+                   "max_pages": limits.max_pages, "max_json_bytes": limits.max_json_bytes,
+                   "include_hidden_text": bool(include_hidden_text)}
         (folder/"request.json").write_text(json.dumps(request))
         started = time.monotonic()
         with subprocess.Popen([str(python), "-B", "-m", "pdf_document_context.worker", str(folder/"request.json")],

@@ -36,6 +36,13 @@ def isolate():
     resource.setrlimit(resource.RLIMIT_AS, (6*1024**3,6*1024**3))
 
 
+def odl_options(request):
+    options={"format":"json", "quiet":True, "image_output":"off", "include_header_footer":True}
+    if request.get('include_hidden_text'):
+        options['content_safety_off']=['hidden-text']
+    return options
+
+
 def main():
     request = json.loads(Path(sys.argv[1]).read_text())
     folder = Path(request["directory"])
@@ -45,7 +52,7 @@ def main():
         import opendataloader_pdf
         # No hybrid, no AI backend, no images or tagged-PDF export.
         opendataloader_pdf.convert(input_path=[str(folder/"input.pdf")],
-                                   output_dir=str(folder), format="json", quiet=True)
+                                   output_dir=str(folder), **odl_options(request))
         output = folder/"input.json"
         if output.stat().st_size > request["max_json_bytes"]:raise ValueError("JSON too large")
         raw = json.loads(output.read_text())
