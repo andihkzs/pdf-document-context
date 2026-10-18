@@ -1,21 +1,21 @@
-# Versionen und Kompatibilität
+# Versions and compatibility
 
-## 0.1.0
+## 0.1.1
 
-Erste experimentelle Veröffentlichung. Python-API und Datenformat können sich in späteren 0.x-Versionen ändern.
+English documentation, examples and release descriptions. No model-provider integration is included in the library. The Python API and schema remain compatible with 0.1.0.
 
-| Schnittstelle | Version / Nachweis |
+| Interface | Version / evidence |
 |---|---|
-| Bibliothek | `pdf-document-context==0.1.0` |
-| Gemeinsames JSON-Datenformat | `1.0`, `Document.schema_version` |
-| Primäradapter | Docling `2.140.0`, `DoclingDocument.export_to_dict()` |
-| Zweitadapter | OpenDataLoader PDF `2.5.13`, `format="json"` |
-| Einfacher Eingangsadapter | `pages` mit `width`, `height`, `items`; je Item `id`, `role`, `text`, `rect`, `order`, optional `cells` |
-| Integrationslauf | Steuerung und OpenDataLoader unter Python 3.14, Docling unter Python 3.12, OpenJDK 21, CPU, vorinstallierte Docling-Modelle |
-| Test-PDF-Erzeugung | PyMuPDF `1.26.7`; nicht Teil der Laufzeitabhängigkeiten |
+| Library | `pdf-document-context==0.1.1` |
+| Shared JSON schema | `1.0`, `Document.schema_version` |
+| Primary adapter | Docling `2.140.0`, `DoclingDocument.export_to_dict()` |
+| Secondary adapter | OpenDataLoader PDF `2.5.13`, `format="json"` |
+| Prepared-input adapter | `pages` with `width`, `height`, `items`; each item has `id`, `role`, `text`, `rect`, `order`, optional `cells` |
+| Real integration test | Controller and OpenDataLoader on Python 3.14, Docling on Python 3.12, OpenJDK 21, CPU, preinstalled Docling models |
+| PDF fixture generation | PyMuPDF `1.26.7`; not a runtime dependency |
 
-Die optionale Abhängigkeitsgruppe `engines` pinnt die beiden Parser-Versionen. Transitive Abhängigkeiten und Modelldateien sind nicht vollständig gelockt; für reproduzierbare Produktivinstallationen zusätzlich eigene Plattform-Lockdatei und Modell-Prüfsummen führen. Ein bestandenes Beispiel ist keine allgemeine Qualitätszusage für beliebige PDFs.
+The optional `engines` dependency group pins both parser versions. Transitive dependencies and model files are not fully locked. Production deployments should also maintain platform-specific lockfiles and model checksums. Passing the example does not establish quality on arbitrary PDFs.
 
-Lokale Nachweise: 19 Tests jeweils unter Python 3.12 und 3.14. Der echte Zwei-Seiten-Lauf erkannte Tabellen mit beiden Parsern: fünf Primärblöcke, vier Zweitparser-Blöcke, sechs kombinierte Blöcke und drei offen markierte Unterschiede. Alle Kontexte blieben innerhalb der Grenze; keine LLM-Anfragen. Unterschiedliche Segmentierung wird absichtlich als offen ausgewiesen. Der Test überprüft keine PDF/UA-Konformität oder Übersetzungsqualität.
+Verification for 0.1.0: 19 tests passed locally on Python 3.12 and 3.14 and in GitHub Actions on Python 3.11–3.14. The real two-page fixture produced five primary blocks, four secondary blocks, six combined blocks and three explicit differences. Both engines detected the table; all contexts remained within budget; no LLM calls occurred. Segmentation differences intentionally remain unresolved. These tests do not establish PDF/UA conformance or translation quality.
 
-Beim Update eines Parsers: echten Text-/Tabellen-Test ausführen, Koordinatenkonvertierung prüfen, neue Ausgaben gegen bisherige Ergebnisse vergleichen und Versionsmatrix aktualisieren. Keine stillen Schemaanpassungen.
+When upgrading a parser, run the real text/table fixture, check coordinate conversion, compare outputs and update this matrix. Do not silently adapt an unverified schema.
