@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pdf-document-context"
+version = "0.1.0"
+description = "Local Docling/OpenDataLoader reconciliation and bounded context for PDF translation"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+readme = "README.md"
+dependencies = []
+
+[project.optional-dependencies]
+engines = ["docling==2.140.0", "opendataloader-pdf==2.5.13"]
+
+[project.scripts]
+pdf-document-context = "pdf_document_context.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
